@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D Заметки Мастера</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dragon-green: #2e7d32;
+            --dragon-dark-green: #1b5e20;
+            --fire-orange: #ef6c00;
+            --fire-dark-orange: #e65100;
+            --scroll-yellow: #ffd54f;
+            --parchment: #f5e5c0;
+            --leather-brown: #5d4037;
+            --wood-brown: #4e342e;
+            --shadow: rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--dragon-green) 0%, var(--leather-brown) 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            background-attachment: fixed;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 30px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M10,10 Q30,5 50,20 T90,10 Q95,30 80,50 T90,90 Q70,95 50,80 T10,90 Q5,70 20,50 T10,10" fill="%23ef6c00" opacity="0.3"/></svg>'), 
+                        linear-gradient(to right, var(--fire-orange), var(--dragon-green));
+            background-size: 120px, auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px var(--shadow);
+            position: relative;
+            overflow: hidden;
+            border: 3px solid var(--wood-brown);
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.5v-5.5H7l9-8.5-1 5.5h4l-9 8.5z" fill="%232e7d32" opacity="0.1"/></svg>');
+            opacity: 0.2;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            font-family: 'MedievalSharp', cursive;
+            font-size: 3.5rem;
+            color: var(--scroll-yellow);
+            text-shadow: 3px 3px 0 var(--leather-brown), 5px 5px 0 var(--fire-dark-orange);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            color: var(--parchment);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .dragon-icon {
+            font-size: 4rem;
+            color: var(--fire-orange);
+            margin: 10px;
+            text-shadow: 2px 2px 3px var(--leather-brown);
+            animation: flame 2s infinite alternate;
+        }
+
+        .dice-icon {
+            font-size: 3.5rem;
+            color: var(--dragon-green);
+            margin: 10px;
+            animation: roll 5s infinite;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        .controls-panel {
+            flex: 1;
+            min-width: 300px;
+            background: var(--parchment);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px var(--shadow);
+            border: 3px solid var(--wood-brown);
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" fill="none" stroke="%235d4037" stroke-width="0.5" opacity="0.2"/></svg>');
+        }
+
+        .notes-container {
+            flex: 3;
+            min-width: 300px;
+        }
+
+        .section-title {
+            font-family: 'MedievalSharp', cursive;
+            color: var(--dragon-dark-green);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px dashed var(--fire-orange);
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--wood-brown);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--fire-orange);
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.8);
+            font-family: 'Roboto', sans-serif;
+            font-size: 1rem;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: var(--fire-orange);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 0 var(--fire-dark-orange);
+        }
+
+        .btn:hover {
+            background: var(--fire-dark-orange);
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 var(--fire-dark-orange);
+        }
+
+        .btn i {
+            font-size: 1.2rem;
+        }
+
+        .btn-save {
+            background: var(--dragon-green);
+            box-shadow: 0 4px 0 var(--dragon-dark-green);
+            width: 100%;
+        }
+
+        .btn-save:hover {
+            background: var(--dragon-dark-green);
+            box-shadow: 0 2px 0 var(--dragon-dark-green);
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 25px 0;
+            background: rgba(255, 213, 79, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px dashed var(--fire-orange);
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .note-card {
+            background: var(--parchment);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px var(--shadow);
+            border: 2px solid var(--wood-brown);
+            transition: all 0.3s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M10,10 Q30,5 50,20 T90,10 Q95,30 80,50 T90,90 Q70,95 50,80 T10,90 Q5,70 20,50 T10,10" fill="none" stroke="%235d4037" stroke-width="0.3" opacity="0.2"/></svg>');
+        }
+
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px var(--shadow);
+        }
+
+        .note-header {
+            background: linear-gradient(to right, var(--dragon-green), var(--fire-orange));
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .note-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            font-family: 'MedievalSharp', cursive;
+            margin: 0;
+        }
+
+        .note-type {
+            background: var(--scroll-yellow);
+            color: var(--wood-brown);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .note-content {
+            padding: 20px;
+            flex-grow: 1;
+            line-height: 1.6;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 6;
+        }
+
+        .note-footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: rgba(93, 64, 55, 0.1);
+            border-top: 1px solid rgba(93, 64, 55, 0.2);
+        }
+
+        .note-date {
+            color: var(--wood-brown);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .note-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            background: none;
+            border: none;
+            color: var(--dragon-green);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 5px;
+        }
+
+        .btn-action:hover {
+            color: var(--fire-orange);
+            transform: scale(1.2);
+        }
+
+        .empty-notes {
+            text-align: center;
+            padding: 40px;
+            background: var(--parchment);
+            border-radius: 15px;
+            border: 3px dashed var(--fire-orange);
+        }
+
+        .empty-notes i {
+            font-size: 4rem;
+            color: var(--dragon-green);
+            margin-bottom: 20px;
+        }
+
+        .empty-notes p {
+            font-size: 1.2rem;
+            color: var(--wood-brown);
+        }
+
+        @keyframes flame {
+            0% { text-shadow: 0 0 5px var(--fire-orange), 0 0 10px var(--fire-orange); }
+            100% { text-shadow: 0 0 15px var(--fire-dark-orange), 0 0 20px var(--scroll-yellow); }
+        }
+
+        @keyframes roll {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(90deg); }
+            50% { transform: rotate(180deg); }
+            75% { transform: rotate(270deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .dragon-icon, .dice-icon {
+                font-size: 2.5rem;
+            }
+            
+            .notes-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .controls-panel, .notes-container {
+                min-width: 100%;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="header-content">
+                <i class="dragon-icon fas fa-dragon"></i>
+                <h1>D&D Заметки Мастера</h1>
+                <i class="dice-icon fas fa-dice-d20"></i>
+                <p class="subtitle">Создавайте, организуйте и вдохновляйтесь для ваших приключений</p>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <div class="controls-panel">
+                <h2 class="section-title"><i class="fas fa-feather-alt"></i> Новая Заметка</h2>
+                <div class="form-group">
+                    <label for="note-title"><i class="fas fa-heading"></i> Заголовок</label>
+                    <input type="text" id="note-title" placeholder="Название заметки">
+                </div>
+                
+                <div class="form-group">
+                    <label for="note-type"><i class="fas fa-tag"></i> Тип заметки</label>
+                    <select id="note-type">
+                        <option value="npc">Персонажи (NPC)</option>
+                        <option value="city">Города и Локации</option>
+                        <option value="plot">Сюжетные линии</option>
+                        <option value="quest">Квесты и задания</option>
+                        <option value="item">Магические предметы</option>
+                        <option value="monster">Монстры и существа</option>
+                        <option value="organization">Организации</option>
+                        <option value="history">История и лор</option>
+                        <option value="other">Прочее</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="note-content"><i class="fas fa-scroll"></i> Содержание</label>
+                    <textarea id="note-content" placeholder="Опишите детали..."></textarea>
+                </div>
+                
+                <button class="btn btn-save" id="save-note">
+                    <i class="fas fa-save"></i> Сохранить заметку
+                </button>
+                
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="sort-by"><i class="fas fa-sort"></i> Сортировать по</label>
+                        <select id="sort-by">
+                            <option value="date-desc">Дате (сначала новые)</option>
+                            <option value="date-asc">Дате (сначала старые)</option>
+                            <option value="title-asc">Названию (А-Я)</option>
+                            <option value="title-desc">Названию (Я-А)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-type"><i class="fas fa-filter"></i> Фильтр по типу</label>
+                        <select id="filter-type">
+                            <option value="all">Все типы</option>
+                            <option value="npc">Персонажи (NPC)</option>
+                            <option value="city">Города и Локации</option>
+                            <option value="plot">Сюжетные линии</option>
+                            <option value="quest">Квесты и задания</option>
+                            <option value="item">Магические предметы</option>
+                            <option value="monster">Монстры и существа</option>
+                            <option value="organization">Организации</option>
+                            <option value="history">История и лор</option>
+                            <option value="other">Прочее</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="notes-container">
+                <h2 class="section-title"><i class="fas fa-book-open"></i> Ваши Заметки</h2>
+                <div class="notes-grid" id="notes-list">
+                    <!-- Заметки будут добавляться сюда динамически -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Иконки для каждого типа заметок
+        const typeIcons = {
+            'npc': 'fa-user',
+            'city': 'fa-city',
+            'plot': 'fa-book',
+            'quest': 'fa-tasks',
+            'item': 'fa-ring',
+            'monster': 'fa-paw',
+            'organization': 'fa-users',
+            'history': 'fa-landmark',
+            'other': 'fa-dragon'
+        };
+        
+        // Названия для каждого типа заметок
+        const typeNames = {
+            'npc': 'Персонаж',
+            'city': 'Город',
+            'plot': 'Сюжет',
+            'quest': 'Квест',
+            'item': 'Предмет',
+            'monster': 'Монстр',
+            'organization': 'Организация',
+            'history': 'История',
+            'other': 'Прочее'
+        };
+        
+        // Цвета для каждого типа заметок
+        const typeColors = {
+            'npc': '#2196F3',
+            'city': '#4CAF50',
+            'plot': '#9C27B0',
+            'quest': '#FF9800',
+            'item': '#E91E63',
+            'monster': '#F44336',
+            'organization': '#795548',
+            'history': '#607D8B',
+            'other': '#9E9E9E'
+        };
+        
+        // Загрузка заметок из localStorage
+        function loadNotes() {
+            const notes = localStorage.getItem('dndNotes');
+            return notes ? JSON.parse(notes) : [];
+        }
+        
+        // Сохранение заметок в localStorage
+        function saveNotes(notes) {
+            localStorage.setItem('dndNotes', JSON.stringify(notes));
+        }
+        
+        // Генерация уникального ID
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+        
+        // Форматирование даты
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        // Добавление новой заметки
+        function addNote() {
+            const title = document.getElementById('note-title').value.trim();
+            const type = document.getElementById('note-type').value;
+            const content = document.getElementById('note-content').value.trim();
+            
+            if (!title || !content) {
+                alert('Пожалуйста, заполните заголовок и содержание заметки');
+                return;
+            }
+            
+            const newNote = {
+                id: generateId(),
+                title,
+                type,
+                content,
+                createdAt: new Date().toISOString()
+            };
+            
+            const notes = loadNotes();
+            notes.push(newNote);
+            saveNotes(notes);
+            
+            // Очистка формы
+            document.getElementById('note-title').value = '';
+            document.getElementById('note-content').value = '';
+            
+            renderNotes();
+        }
+        
+        // Удаление заметки
+        function deleteNote(id) {
+            if (confirm('Вы уверены, что хотите удалить эту заметку?')) {
+                let notes = loadNotes();
+                notes = notes.filter(note => note.id !== id);
+                saveNotes(notes);
+                renderNotes();
+            }
+        }
+        
+        // Редактирование заметки
+        function editNote(id) {
+            const notes = loadNotes();
+            const note = notes.find(note => note.id === id);
+            
+            if (note) {
+                document.getElementById('note-title').value = note.title;
+                document.getElementById('note-type').value = note.type;
+                document.getElementById('note-content').value = note.content;
+                
+                // Удаляем старую заметку
+                const updatedNotes = notes.filter(n => n.id !== id);
+                saveNotes(updatedNotes);
+                
+                renderNotes();
+            }
+        }
+        
+        // Рендеринг заметок
+        function renderNotes() {
+            const notesList = document.getElementById('notes-list');
+            const sortBy = document.getElementById('sort-by').value;
+            const filterType = document.getElementById('filter-type').value;
+            
+            let notes = loadNotes();
+            
+            // Фильтрация
+            if (filterType !== 'all') {
+                notes = notes.filter(note => note.type === filterType);
+            }
+            
+            // Сортировка
+            switch (sortBy) {
+                case 'date-desc':
+                    notes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    break;
+                case 'date-asc':
+                    notes.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                    break;
+                case 'title-asc':
+                    notes.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'title-desc':
+                    notes.sort((a, b) => b.title.localeCompare(a.title));
+                    break;
+            }
+            
+            // Очистка контейнера
+            notesList.innerHTML = '';
+            
+            if (notes.length === 0) {
+                notesList.innerHTML = `
+                    <div class="empty-notes">
+                        <i class="fas fa-scroll"></i>
+                        <p>У вас пока нет заметок. Создайте первую!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Добавление заметок
+            notes.forEach(note => {
+                const noteElement = document.createElement('div');
+                noteElement.className = 'note-card';
+                noteElement.innerHTML = `
+                    <div class="note-header">
+                        <h3 class="note-title">${note.title}</h3>
+                        <span class="note-type" style="background: ${typeColors[note.type] || '#9E9E9E'}">
+                            <i class="fas ${typeIcons[note.type] || 'fa-dragon'}"></i>
+                            ${typeNames[note.type] || 'Прочее'}
+                        </span>
+                    </div>
+                    <div class="note-content">${note.content}</div>
+                    <div class="note-footer">
+                        <div class="note-date">
+                            <i class="fas fa-calendar-alt"></i>
+                            ${formatDate(note.createdAt)}
+                        </div>
+                        <div class="note-actions">
+                            <button class="btn-action" onclick="editNote('${note.id}')" title="Редактировать">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-action" onclick="deleteNote('${note.id}')" title="Удалить">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                notesList.appendChild(noteElement);
+            });
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            // Обработчики событий
+            document.getElementById('save-note').addEventListener('click', addNote);
+            document.getElementById('sort-by').addEventListener('change', renderNotes);
+            document.getElementById('filter-type').addEventListener('change', renderNotes);
+            
+            // Загрузка начальных заметок
+            renderNotes();
+            
+            // Добавление тестовых данных при первом запуске
+            if (loadNotes().length === 0) {
+                const testNotes = [
+                    {
+                        id: generateId(),
+                        title: 'Элронд Полуэльф',
+                        type: 'npc',
+                        content: 'Мудрый правитель Ривенделла. Имеет древнее происхождение и владеет магией. Важный союзник в борьбе против сил тьмы.',
+                        createdAt: '2023-05-15T10:30:00Z'
+                    },
+                    {
+                        id: generateId(),
+                        title: 'Водяная Дева Озера',
+                        type: 'monster',
+                        content: 'Опасное существо, обитающее в лесных озерах. Заманивает путников сладкими песнями, а затем топит их. Слабость - серебро.',
+                        createdAt: '2023-06-20T14:45:00Z'
+                    },
+                    {
+                        id: generateId(),
+                        title: 'Кольцо Невидимости',
+                        type: 'item',
+                        content: 'Магическое кольцо, дающее способность становиться невидимым при надевании. Имеет побочный эффект - притягивает внимание Назгулов.',
+                        createdAt: '2023-04-10T09:15:00Z'
+                    }
+                ];
+                
+                saveNotes(testNotes);
+                renderNotes();
+            }
+        });
+        
+        // Экспорт функций для обработчиков событий в HTML
+        window.deleteNote = deleteNote;
+        window.editNote = editNote;
+    </script>
+</body>
+</html>
